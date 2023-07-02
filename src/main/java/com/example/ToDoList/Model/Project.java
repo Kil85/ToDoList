@@ -31,7 +31,7 @@ public class Project {
         return id;
     }
 
-    Set<ProjectSteps> getProjectSteps() {
+    public Set<ProjectSteps> getProjectSteps() {
         return projectSteps;
     }
 
