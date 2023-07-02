@@ -15,6 +15,9 @@ public interface TaskRepository {
 
     Task save(Task entity);
 
-    boolean existsById(int id);
+    boolean existsById(Integer id);
+
+    boolean existsByDoneIsFalseAndGroup_Id(Integer id);
+
 
 }

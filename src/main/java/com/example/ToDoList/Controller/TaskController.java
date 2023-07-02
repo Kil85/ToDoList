@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 
@@ -42,14 +43,27 @@ public class TaskController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path = "/tasks/{id}")
+    @Transactional
     public ResponseEntity<?> UpdateTask(@RequestBody @Valid Task task, @PathVariable int id) {
 
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
 
-        task.setId(id);
-        repository.save(task);
+        repository.findById(id).ifPresent(t -> t.updateTask(task));
+
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, path = "/tasks/{id}")
+    @Transactional
+    public ResponseEntity<?> UpdateDone(@PathVariable int id) {
+
+        if (!repository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        repository.findById(id).ifPresent(task -> task.setDone(!task.isDone()));
         return ResponseEntity.noContent().build();
 
     }

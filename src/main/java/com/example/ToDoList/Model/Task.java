@@ -2,41 +2,46 @@ package com.example.ToDoList.Model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
-public class Task {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
-    @NotBlank(message = "Can not be empty :<")
-    private String description;
-    private boolean done;
+public class Task extends BaseTask {
+
+    private LocalDateTime deadline;
+
+    @ManyToOne
+    @JoinColumn(name = "task_group_id")
+    private TaskGroup group;
+
+    @Embedded
+    private Audit audit = new Audit();
 
     public Task() {
     }
 
-    public String getDescription() {
-        return description;
+    public LocalDateTime getDeadline() {
+        return deadline;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = deadline;
     }
 
-    public boolean isDone() {
-        return done;
+
+    TaskGroup getGroup() {
+        return group;
     }
 
-    public void setDone(boolean done) {
-        this.done = done;
+    void setGroup(TaskGroup group) {
+        this.group = group;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
+    public void updateTask(Task task) {
+        setDescription(task.getDescription());
+        setDone(task.isDone());
+        deadline = task.deadline;
+        group = task.group;
     }
 }
